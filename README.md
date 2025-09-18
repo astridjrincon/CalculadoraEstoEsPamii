@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Contraprestación Pamiig@</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap' );
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 40px;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            margin: 0;
+            color: #1a294d;
+            font-size: 1.5em;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.2em;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+        
+        /* Estilo para la nueva casilla de solo lectura */
+        .readonly-field {
+            background-color: #e9ecef;
+            font-weight: 600;
+            color: #495057;
+            border: 1px dashed #ccc;
+        }
+
+        .result-container {
+            margin-top: 25px;
+            background-color: #e6f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #e53935;
+        }
+
+        .result-container p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #1a294d;
+        }
+
+        .result-container .ganancia {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #e53935;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-container">
+        <div class="header">
+            <img src="https://i.imgur.com/2Y6s2yW.png" alt="Logo Pamiig@">
+            <h2>Calcula tu Ganancia</h2>
+        </div>
+
+        <div class="input-group">
+            <label for="ventasFullPrice">Total Ventas en Productos FULL PRICE (PVP )</label>
+            <input type="number" id="ventasFullPrice" placeholder="$ 0">
+        </div>
+
+        <div class="input-group">
+            <label for="ventasDescuento">Total Ventas en Productos CON DESCUENTO (PVP)</label>
+            <input type="number" id="ventasDescuento" placeholder="$ 0">
+        </div>
+
+        <!-- ===== INICIA LA NUEVA CASILLA ===== -->
+        <div class="input-group">
+            <label for="totalSinIva">Total Base (sin IVA)</label>
+            <input type="text" id="totalSinIva" class="readonly-field" readonly placeholder="$ 0">
+        </div>
+        <!-- ===== TERMINA LA NUEVA CASILLA ===== -->
+
+        <div class="result-container">
+            <p>TU GANANCIA ES:</p>
+            <p class="ganancia" id="resultado">$ 0</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const inputFullPrice = document.getElementById('ventasFullPrice');
+            const inputDescuento = document.getElementById('ventasDescuento');
+            const resultadoElement = document.getElementById('resultado');
+            const totalSinIvaElement = document.getElementById('totalSinIva'); // Elemento de la nueva casilla
+
+            function calcularGanancia() {
+                const IVA = 0.19;
+                const porcentajePamiigoFullPrice = 0.50;
+                const porcentajePamiigoDescuento = 0.25;
+
+                const ventasFullPVP = parseFloat(inputFullPrice.value) || 0;
+                const ventasDescPVP = parseFloat(inputDescuento.value) || 0;
+
+                const precioBaseFull = ventasFullPVP / (1 + IVA);
+                const precioBaseDesc = ventasDescPVP / (1 + IVA);
+                
+                const totalBaseSinIva = precioBaseFull + precioBaseDesc; // Suma de los precios base
+
+                const gananciaPamiigoFull = precioBaseFull * porcentajePamiigoFullPrice;
+                const gananciaPamiigoDesc = precioBaseDesc * porcentajePamiigoDescuento;
+
+                const gananciaTotal = gananciaPamiigoFull + gananciaPamiigoDesc;
+
+                const formatter = new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0
+                });
+
+                // Actualizar ambos resultados en la pantalla
+                totalSinIvaElement.value = formatter.format(totalBaseSinIva);
+                resultadoElement.innerText = formatter.format(gananciaTotal);
+            }
+
+            inputFullPrice.addEventListener('input', calcularGanancia);
+            inputDescuento.addEventListener('input', calcularGanancia);
+        });
+    </script>
+
+</body>
+</html>
+
